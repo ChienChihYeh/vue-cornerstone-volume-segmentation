@@ -1,4 +1,5 @@
 //minimal type definitions for @cornerstonejs/dicom-image-loader
+//https://github.com/cornerstonejs/cornerstone3D/issues/1155
 
 interface LoaderDecodeOptions {
   convertFloatPixelDataToInt?: boolean

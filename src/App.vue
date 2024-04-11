@@ -22,8 +22,16 @@ async function initDemo() {
 initCornerstone().then(() => {
   initToolGroup()
 
+  //This create Image Ids and Cache MetaData (Yup, they love coouple things together)
   initDemo()
-  // Workaround: load DICOM images for metadata
+
+  // Alternative implementations: https://www.cornerstonejs.org/docs/concepts/streaming-image-volume/streaming/#alternative-implementations-to-consider
+  //  Advantages:
+  // Not need for a separate metadata call to fetch the image metadata.
+  // Disadvantages:
+  // Performance cost
+  // Cannot progressively load the image data, as it requires creating a new volume for each image change
+
   // Promise.all(cornerstone.imageLoader.loadAndCacheImages(dicomImageIds))
   //   .then(() => {
   //     isInit.value = true

@@ -5,4 +5,6 @@ A vue-cornerstone3D volume viewer template with segmentation tool. The project i
 ### Features
 
 - Rendering volume with Cornerstone3D in Vue application
-- Basic segmentation tool
+- Providing metadata for rendering volume and alternative implementations
+- Basic segmentation tool usage
+- Viewport configuration demo

@@ -22,7 +22,7 @@ async function initDemo() {
 initCornerstone().then(() => {
   initToolGroup()
 
-  //This create Image Ids and Cache MetaData (Yup, they love coouple things together)
+  //This create Image Ids and Cache MetaData (Yup, they love couple things together)
   initDemo()
 
   // Alternative implementations: https://www.cornerstonejs.org/docs/concepts/streaming-image-volume/streaming/#alternative-implementations-to-consider

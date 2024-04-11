@@ -1,7 +1,7 @@
 <!-- https://deploy-preview-1177--cornerstone-3d-docs.netlify.app/live-examples/segmentationvolume -->
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import {
   volumeName,
   volumeLoaderScheme,
@@ -15,15 +15,19 @@ import * as cornerstone from '@cornerstonejs/core'
 import * as cornerstoneTools from '@cornerstonejs/tools'
 import type { IVolumeViewport, PublicViewportInput } from '@cornerstonejs/core/dist/types/types'
 import { initVolume } from '@/utils/initVolume'
+import labelmapTools from '@/utils/labelmapTools'
+import { segmentIndex } from '@cornerstonejs/tools/dist/types/stateManagement/segmentation'
 
 const props = defineProps<{ imageIds: string[] }>()
 
 const dicomImageIds = props.imageIds
+const toolNames = [...labelmapTools.toolMap.keys()]
 
 const el1 = ref<HTMLDivElement | null>()
 const el2 = ref<HTMLDivElement | null>()
 const el3 = ref<HTMLDivElement | null>()
 const volume = ref()
+const currentTool = ref(toolNames[0])
 
 const volumeId = `${volumeLoaderScheme}:${volumeName}`
 
@@ -31,6 +35,27 @@ const { getRenderingEngine, setVolumesForViewports, Enums } = cornerstone
 const { ViewportType, OrientationAxis } = Enums
 const { segmentation, ToolGroupManager, Enums: ToolEnums } = cornerstoneTools
 const renderingEngine = getRenderingEngine(renderingEngineId)
+
+console.log('Brush Tool Map:', toolNames)
+
+function selectTool(toolName: string) {
+  const toolGroup = ToolGroupManager.getToolGroup(toolGroupId)
+  if (!toolGroup) return
+  const primaryMouseToolName = toolGroup.getActivePrimaryMouseButtonTool()
+  if (primaryMouseToolName) {
+    toolGroup.setToolDisabled(primaryMouseToolName)
+  }
+  toolGroup.setToolActive(toolName, {
+    bindings: [{ mouseButton: 1 }]
+  })
+}
+
+selectTool(toolNames[0])
+
+watch(currentTool, (value) => {
+  console.log(value)
+  selectTool(value)
+})
 
 onMounted(() => {
   const viewportInputArray = [
@@ -74,9 +99,31 @@ onMounted(() => {
 
     await setVolumesForViewports(renderingEngine, [{ volumeId }], viewportIds)
 
+    segmentation.addSegmentations([
+      {
+        segmentationId,
+        representation: {
+          type: ToolEnums.SegmentationRepresentations.Labelmap,
+          data: {
+            volumeId: segmentationId
+          }
+        }
+      }
+    ])
+
     await segmentation.addSegmentationRepresentations(toolGroupId, [
       { segmentationId, type: ToolEnums.SegmentationRepresentations.Labelmap }
     ])
+
+    const segmentationRepresentations =
+      segmentation.state.getSegmentationIdRepresentations(segmentationId)
+
+    segmentation.activeSegmentation.setActiveSegmentationRepresentation(
+      toolGroupId,
+      segmentationRepresentations[0].segmentationRepresentationUID
+    )
+
+    console.log(segmentation.activeSegmentation.getActiveSegmentationRepresentation(toolGroupId))
 
     renderingEngine.renderViewports(viewportIds)
     // custom VOI settings
@@ -97,6 +144,9 @@ onMounted(() => {
     <div class="viewer" ref="el3" id="viewer3" @contextmenu="$event.preventDefault()"></div>
   </div>
   <div class="foot">
+    <select v-model="currentTool">
+      <option v-for="item in labelmapTools.toolMap.keys()" :key="item">{{ item }}</option>
+    </select>
     <button
       @click="
         () => {
@@ -109,7 +159,7 @@ onMounted(() => {
         }
       "
     >
-      Show Segmentation Object
+      Segmentation Log
     </button>
   </div>
 </template>
@@ -130,5 +180,10 @@ onMounted(() => {
 .title,
 .foot {
   text-align: center;
+}
+
+button,
+select {
+  margin: 0 4px;
 }
 </style>

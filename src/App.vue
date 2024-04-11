@@ -3,28 +3,41 @@ import { ref } from 'vue'
 import { initCornerstone } from './utils/initCornerstone'
 import DicomViewer from './components/DicomViewer.vue'
 import { initToolGroup } from './utils/toolGroup'
-import * as cornerstone from '@cornerstonejs/core'
-import { dicomImageIds } from './utils/dicomImagePath'
+import { createImageIdsAndCacheMetaData } from './utils/helpers'
+// import * as cornerstone from '@cornerstonejs/core'
+// import { dicomImageIds } from './utils/dicomImagePath'
 
 const isInit = ref(false)
+const imageIds = ref()
+
+async function initDemo() {
+  imageIds.value = await createImageIdsAndCacheMetaData({
+    StudyInstanceUID: '1.3.6.1.4.1.14519.5.2.1.7009.2403.334240657131972136850343327463',
+    SeriesInstanceUID: '1.3.6.1.4.1.14519.5.2.1.7009.2403.226151125820845824875394858561',
+    wadoRsRoot: 'https://d3t6nz73ql33tx.cloudfront.net/dicomweb'
+  })
+  isInit.value = true
+}
 
 initCornerstone().then(() => {
   initToolGroup()
-  // Load DICOM images: replace with your own image IDs
-  Promise.all(cornerstone.imageLoader.loadAndCacheImages(dicomImageIds))
-    .then(() => {
-      isInit.value = true
-    })
-    .catch((error) => {
-      console.error('Error loading and caching images:', error)
-    })
+
+  initDemo()
+  // Workaround: load DICOM images for metadata
+  // Promise.all(cornerstone.imageLoader.loadAndCacheImages(dicomImageIds))
+  //   .then(() => {
+  //     isInit.value = true
+  //   })
+  //   .catch((error) => {
+  //     console.error('Error loading and caching images:', error)
+  //   })
 })
 </script>
 
 <template>
   <main>
     <div class="container">
-      <DicomViewer v-if="isInit" />
+      <DicomViewer v-if="isInit" :imageIds="imageIds" />
       <h3 v-else>Loading...</h3>
     </div>
   </main>

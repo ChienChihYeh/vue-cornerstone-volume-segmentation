@@ -9,10 +9,14 @@ import {
   toolGroupId
 } from '@/constants/cornerstoneIds'
 import * as cornerstone from '@cornerstonejs/core'
-import { dicomImageIds } from '@/utils/dicomImagePath'
+// import { dicomImageIds } from '@/utils/dicomImagePath'
 import * as cornerstoneTools from '@cornerstonejs/tools'
 import type { IVolumeViewport, PublicViewportInput } from '@cornerstonejs/core/dist/types/types'
 import { initVolume } from '@/utils/initVolume'
+
+const props = defineProps<{ imageIds: string[] }>()
+
+const dicomImageIds = props.imageIds
 
 const el1 = ref<HTMLDivElement | null>()
 const el2 = ref<HTMLDivElement | null>()
@@ -73,17 +77,18 @@ onMounted(() => {
     ])
 
     renderingEngine.renderViewports(viewportIds)
-    for (let i = 0; i < viewportIds.length; i++) {
-      const viewport = renderingEngine.getViewport(viewportIds[i]) as IVolumeViewport
-      viewport.setProperties({ voiRange: { lower: -500, upper: 1600 } })
-    }
+    // custom VOI settings
+    // for (let i = 0; i < viewportIds.length; i++) {
+    //   const viewport = renderingEngine.getViewport(viewportIds[i]) as IVolumeViewport
+    //   viewport.setProperties({ voiRange: { lower: -500, upper: 1600 } })
+    // }
   }
   initRender()
 })
 </script>
 
 <template>
-  <h3 class="title">Segmentation</h3>
+  <h3 class="title">Render Volume and Segmentation in Vue</h3>
   <div class="viewer-container">
     <div class="viewer" ref="el1" id="viewer1" @contextmenu="$event.preventDefault()"></div>
     <div class="viewer" ref="el2" id="viewer2" @contextmenu="$event.preventDefault()"></div>
@@ -94,7 +99,9 @@ onMounted(() => {
       @click="
         () => {
           const segmentations = cornerstoneTools.segmentation.state.getSegmentations()
-          // const volumeSegmentation = cornerstone.cache.getVolume(segmentations[0].segmentationId)
+          const volumeSegmentation = cornerstone.cache.getVolume(segmentations[0].segmentationId)
+          console.log(volumeSegmentation)
+          // convert to arrayBuffer
           // const arrayBuffer = volumeSegmentation.getScalarData()
           // console.log(arrayBuffer)
         }

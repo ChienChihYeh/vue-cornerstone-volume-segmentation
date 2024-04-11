@@ -23,6 +23,7 @@ interface LoaderXhrRequestError extends Error {
 declare module '@cornerstonejs/dicom-image-loader' {
   import * as cornerstone from '@cornerstonejs/core'
   import dicomParser from 'dicom-parser'
+  import type { WADORSMetaData } from './WADORSMetaData'
 
   interface External {
     cornerstone: typeof cornerstone
@@ -41,6 +42,14 @@ declare module '@cornerstonejs/dicom-image-loader' {
       errorInterceptor?: (error: LoaderXhrRequestError) => void
     }): void
     external: External
+    wadors: {
+      metaDataManager: {
+        add: (imageId: string, metadata: WADORSMetaData) => void
+        get: (imageId: string) => WADORSMetaData | undefined
+      }
+
+      // to be fixed later: https://github.com/cornerstonejs/cornerstone3D/issues/1155
+    }
   }
 
   const cornerstoneDICOMImageLoader: DICOMImageLoader

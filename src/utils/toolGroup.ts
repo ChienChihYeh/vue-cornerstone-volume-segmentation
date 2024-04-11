@@ -21,7 +21,8 @@ export function initToolGroup() {
   const toolGroup = ToolGroupManager.createToolGroup(toolGroupId)
 
   // toolGroup?.addTool(ZoomTool.toolName)
-  toolGroup?.addTool(BrushTool.toolName)
+  // toolGroup?.addTool(BrushTool.toolName)
+  toolGroup?.addTool('')
   // toolGroup?.addTool(StackScrollMouseWheelTool.toolName)
   toolGroup?.addTool(SegmentationDisplayTool.toolName)
 

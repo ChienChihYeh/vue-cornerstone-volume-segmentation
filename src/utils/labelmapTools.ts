@@ -8,12 +8,12 @@ const previewColors = {
   1: [0, 255, 255, 255]
 }
 const preview = {
-  // if you enable this without knowing what it does, you'll in for a hell lot of trouble
-  enabled: false,
+  enabled: true,
   previewColors
 }
+// Disabled before I figure out what it does, the config seems to mess up brush tool default behavior
 const configuration = {
-  preview,
+  // preview,
   strategySpecificConfiguration: {
     useCenterSegmentIndex: true
   }
@@ -40,11 +40,27 @@ const defaultThresholdOption = [...thresholdOptions.keys()][2]
 const thresholdArgs = thresholdOptions.get(defaultThresholdOption)
 const toolMap = new Map()
 
-toolMap.set('ThresholdCircle', {
+toolMap.set('CircularBrush', {
   // tool: BrushTool,
+  baseTool: BrushTool.toolName
+  // configuration: {
+  //   ...configuration,
+  //   activeStrategy: 'FILL_INSIDE_CIRCLE'
+  // }
+})
+
+toolMap.set('CircularEraser', {
   baseTool: BrushTool.toolName,
   configuration: {
-    ...configuration,
+    // ...configuration,
+    activeStrategy: 'ERASE_INSIDE_CIRCLE'
+  }
+})
+
+toolMap.set('ThresholdCircle', {
+  baseTool: BrushTool.toolName,
+  configuration: {
+    // ...configuration,
     activeStrategy: 'THRESHOLD_INSIDE_CIRCLE',
     strategySpecificConfiguration: {
       ...configuration.strategySpecificConfiguration,
@@ -53,33 +69,17 @@ toolMap.set('ThresholdCircle', {
   }
 })
 
-toolMap.set('CircularBrush', {
-  baseTool: BrushTool.toolName,
-  configuration: {
-    ...configuration,
-    activeStrategy: 'FILL_INSIDE_CIRCLE'
-  }
-})
-
-toolMap.set('CircularEraser', {
-  baseTool: BrushTool.toolName,
-  configuration: {
-    ...configuration,
-    activeStrategy: 'ERASE_INSIDE_CIRCLE'
-  }
-})
-
 toolMap.set('SphereBrush', {
   baseTool: BrushTool.toolName,
   configuration: {
-    ...configuration,
+    // ...configuration,
     activeStrategy: 'FILL_INSIDE_SPHERE'
   }
 })
 toolMap.set('SphereEraser', {
   baseTool: BrushTool.toolName,
   configuration: {
-    ...configuration,
+    // ...configuration,
     activeStrategy: 'ERASE_INSIDE_SPHERE'
   }
 })

@@ -1,4 +1,6 @@
 <!-- https://deploy-preview-1177--cornerstone-3d-docs.netlify.app/live-examples/segmentationvolume -->
+<!-- TODO: import/export DICOM -->
+<!-- TODO: add/set/remove activeSegmentationRepresentation -->
 
 <script setup lang="ts">
 import { onMounted, ref, watch } from 'vue'
@@ -16,7 +18,6 @@ import * as cornerstoneTools from '@cornerstonejs/tools'
 import type { IVolumeViewport, PublicViewportInput } from '@cornerstonejs/core/dist/types/types'
 import { initVolume } from '@/utils/initVolume'
 import labelmapTools from '@/utils/labelmapTools'
-import { segmentIndex } from '@cornerstonejs/tools/dist/types/stateManagement/segmentation'
 
 const props = defineProps<{ imageIds: string[] }>()
 
@@ -28,12 +29,13 @@ const el2 = ref<HTMLDivElement | null>()
 const el3 = ref<HTMLDivElement | null>()
 const volume = ref()
 const currentTool = ref(toolNames[0])
+const brushSize = ref(25)
 
 const volumeId = `${volumeLoaderScheme}:${volumeName}`
 
 const { getRenderingEngine, setVolumesForViewports, Enums } = cornerstone
 const { ViewportType, OrientationAxis } = Enums
-const { segmentation, ToolGroupManager, Enums: ToolEnums } = cornerstoneTools
+const { segmentation, ToolGroupManager, Enums: ToolEnums, utilities } = cornerstoneTools
 const renderingEngine = getRenderingEngine(renderingEngineId)
 
 console.log('Brush Tool Map:', toolNames)
@@ -53,8 +55,11 @@ function selectTool(toolName: string) {
 selectTool(toolNames[0])
 
 watch(currentTool, (value) => {
-  console.log(value)
   selectTool(value)
+})
+
+watch(brushSize, (value) => {
+  utilities.segmentation.setBrushSizeForToolGroup(toolGroupId, value)
 })
 
 onMounted(() => {
@@ -123,8 +128,6 @@ onMounted(() => {
       segmentationRepresentations[0].segmentationRepresentationUID
     )
 
-    console.log(segmentation.activeSegmentation.getActiveSegmentationRepresentation(toolGroupId))
-
     renderingEngine.renderViewports(viewportIds)
     // custom VOI settings
     // for (let i = 0; i < viewportIds.length; i++) {
@@ -137,7 +140,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <h3 class="title">Render Volume and Segmentation in Vue</h3>
+  <h3 class="title">Volume Render and Segmentation Tools in Vue</h3>
   <div class="viewer-container">
     <div class="viewer" ref="el1" id="viewer1" @contextmenu="$event.preventDefault()"></div>
     <div class="viewer" ref="el2" id="viewer2" @contextmenu="$event.preventDefault()"></div>
@@ -147,6 +150,7 @@ onMounted(() => {
     <select v-model="currentTool">
       <option v-for="item in labelmapTools.toolMap.keys()" :key="item">{{ item }}</option>
     </select>
+
     <button
       @click="
         () => {
@@ -161,6 +165,8 @@ onMounted(() => {
     >
       Segmentation Log
     </button>
+    <span>Brush Size: {{ brushSize }} :</span
+    ><input type="range" min="10" max="50" v-model="brushSize" />
   </div>
 </template>
 
@@ -183,7 +189,16 @@ onMounted(() => {
 }
 
 button,
-select {
+select,
+input {
   margin: 0 4px;
+}
+
+input {
+  vertical-align: text-bottom;
+}
+
+span {
+  font-size: 0.875rem;
 }
 </style>

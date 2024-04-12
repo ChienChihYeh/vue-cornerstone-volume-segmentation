@@ -15,9 +15,11 @@ import {
 import * as cornerstone from '@cornerstonejs/core'
 // import { dicomImageIds } from '@/utils/dicomImagePath'
 import * as cornerstoneTools from '@cornerstonejs/tools'
-import type { IVolumeViewport, PublicViewportInput } from '@cornerstonejs/core/dist/types/types'
+import type { PublicViewportInput } from '@cornerstonejs/core/dist/types/types'
+// import type { IVolumeViewport } from '@cornerstonejs/core/dist/types/types'
 import { initVolume } from '@/utils/initVolume'
 import labelmapTools from '@/utils/labelmapTools'
+import { getSegmentationInfo } from '@/utils/segmentationHelpers'
 
 const props = defineProps<{ imageIds: string[] }>()
 
@@ -151,20 +153,7 @@ onMounted(() => {
       <option v-for="item in labelmapTools.toolMap.keys()" :key="item">{{ item }}</option>
     </select>
 
-    <button
-      @click="
-        () => {
-          const segmentations = cornerstoneTools.segmentation.state.getSegmentations()
-          const volumeSegmentation = cornerstone.cache.getVolume(segmentations[0].segmentationId)
-          console.log(volumeSegmentation)
-          // convert to arrayBuffer
-          // const arrayBuffer = volumeSegmentation.getScalarData()
-          // console.log(arrayBuffer)
-        }
-      "
-    >
-      Segmentation Log
-    </button>
+    <button @click="getSegmentationInfo()">Segmentation Log</button>
     <span>Brush Size: {{ brushSize }} :</span
     ><input type="range" min="10" max="50" v-model="brushSize" />
   </div>

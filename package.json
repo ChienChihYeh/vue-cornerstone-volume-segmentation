@@ -14,11 +14,13 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
+    "@cornerstonejs/adapters": "^1.70.5",
     "@cornerstonejs/calculate-suv": "^1.1.0",
     "@cornerstonejs/core": "^1.70.0",
     "@cornerstonejs/dicom-image-loader": "^1.70.0",
     "@cornerstonejs/streaming-image-volume-loader": "^1.70.0",
     "@cornerstonejs/tools": "^1.70.0",
+    "core-js": "^3.36.1",
     "dcmjs": "^0.31.1",
     "dicom-parser": "^1.8.21",
     "dicomweb-client": "^0.10.4",

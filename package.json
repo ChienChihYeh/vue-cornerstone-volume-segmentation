@@ -25,6 +25,7 @@
     "dicom-parser": "^1.8.21",
     "dicomweb-client": "^0.10.4",
     "vite-plugin-cross-origin-isolation": "^0.1.6",
+    "vite-plugin-wasm": "^3.3.0",
     "vue": "^3.4.21"
   },
   "devDependencies": {

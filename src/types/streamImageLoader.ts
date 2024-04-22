@@ -1,5 +1,6 @@
 import type { Types } from '@cornerstonejs/core'
-import StreamingImageVolume from './StreamingImageVolume'
+import { StreamingImageVolume } from '@cornerstonejs/streaming-image-volume-loader'
+// import StreamingImageVolume from './StreamingImageVolume'
 interface IVolumeLoader {
   promise: Promise<StreamingImageVolume>
   cancel: () => void
@@ -11,8 +12,7 @@ type Options = {
   progressiveRendering?: boolean | Types.IRetrieveConfiguration
 }
 
-declare function cornerstoneStreamingImageVolumeLoader(
+export type StreamImageLoader = (
   volumeId: string,
   options: Options | Record<string, any> | undefined
-): IVolumeLoader
-export default cornerstoneStreamingImageVolumeLoader
+) => IVolumeLoader

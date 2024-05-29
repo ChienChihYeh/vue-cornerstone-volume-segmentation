@@ -22,7 +22,6 @@ export function initToolGroup() {
 
   // toolGroup?.addTool(ZoomTool.toolName)
   // toolGroup?.addTool(BrushTool.toolName)
-  toolGroup?.addTool('')
   // toolGroup?.addTool(StackScrollMouseWheelTool.toolName)
   toolGroup?.addTool(SegmentationDisplayTool.toolName)
 

@@ -51,6 +51,7 @@ declare module '@cornerstonejs/dicom-image-loader' {
 
       // to be fixed later: https://github.com/cornerstonejs/cornerstone3D/issues/1155
     }
+    wadouri
   }
 
   const cornerstoneDICOMImageLoader: DICOMImageLoader

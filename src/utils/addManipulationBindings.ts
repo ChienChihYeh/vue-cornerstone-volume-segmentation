@@ -8,6 +8,7 @@ const {
   PanTool,
   ZoomTool,
   TrackballRotateTool,
+  CrosshairsTool,
   Enums: csToolsEnums
 } = cornerstoneTools
 

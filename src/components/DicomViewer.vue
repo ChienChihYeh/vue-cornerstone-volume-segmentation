@@ -15,11 +15,11 @@ import {
 import * as cornerstone from '@cornerstonejs/core'
 // import { dicomImageIds } from '@/utils/dicomImagePath'
 import * as cornerstoneTools from '@cornerstonejs/tools'
-import type { PublicViewportInput } from '@cornerstonejs/core/dist/types/types'
+import type { IVolumeViewport, PublicViewportInput } from '@cornerstonejs/core/dist/types/types'
 // import type { IVolumeViewport } from '@cornerstonejs/core/dist/types/types'
 import { initVolume } from '@/utils/initVolume'
 import labelmapTools from '@/utils/labelmapTools'
-import { getSegmentationInfo } from '@/utils/segmentationHelpers'
+import { getSegmentationInfo, exportSegmentation } from '@/utils/segmentationHelpers'
 
 const props = defineProps<{ imageIds: string[] }>()
 
@@ -55,6 +55,15 @@ function selectTool(toolName: string) {
 }
 
 selectTool(toolNames[0])
+
+function jumpToIndex() {
+  if (!el2.value) return
+  utilities.jumpToSlice(el2.value, { imageIndex: 255 })
+  const viewwport = renderingEngine?.getViewport(viewportIds[1]) as IVolumeViewport
+  if (!viewwport) return
+  const slice = cornerstone.utilities.getImageSliceDataForVolumeViewport(viewwport)
+  console.log(slice)
+}
 
 watch(currentTool, (value) => {
   selectTool(value)
@@ -153,7 +162,9 @@ onMounted(() => {
       <option v-for="item in labelmapTools.toolMap.keys()" :key="item">{{ item }}</option>
     </select>
 
-    <button @click="getSegmentationInfo()">Segmentation Log</button>
+    <button @click="getSegmentationInfo()">Segmentation Logs</button>
+    <button @click="exportSegmentation()">Export Segmentation</button>
+    <button @click="jumpToIndex()">Jump to Coronal Slice 256</button>
     <span>Brush Size: {{ brushSize }} :</span
     ><input type="range" min="10" max="50" v-model="brushSize" />
   </div>

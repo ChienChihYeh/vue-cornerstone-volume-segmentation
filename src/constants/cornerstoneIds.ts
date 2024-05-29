@@ -4,3 +4,4 @@ export const volumeName = 'CT_VOLUME_ID'
 export const segmentationId = 'MY_SEGMENTATION_ID'
 export const volumeLoaderScheme = 'cornerstoneStreamingImageVolume'
 export const viewportIds = ['CT_AXIAL', 'CT_CORONAL', 'CT_SAGITTAL']
+export const volumeId = `${volumeLoaderScheme}:${volumeName}`
